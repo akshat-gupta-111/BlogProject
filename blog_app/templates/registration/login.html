@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Login</title>
+    </head>
+    <body>
+        <div>
+            <div>
+                <h1>Login</h1>
+                <p>Enter your credentials to log in.</p>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div>
+                        <button type="submit">Login</button>
+                        <a href="{% url 'home' %}">Back home</a>
+                    </div>
+                </form>
+                <div>
+                    New here? <a href="{% url 'signup' %}">Create an account</a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ post.title }}</title>
+  </head>
+  <body>
+    <div>
+      <div>
+        <h1>{{ post.title }}</h1>
+        <div>By {{ post.author.username }} · {{ post.created_at }}</div>
+        {% if post.image %}
+          <div>
+            <img src="{{ post.image.url }}" alt="Post image" width="400">
+          </div>
+        {% endif %}
+        <div>{{ post.content }}</div>
+        <a href="{% url 'home' %}">Back to home</a>
+      </div>
+    </div>
+  </body>
+</html>
