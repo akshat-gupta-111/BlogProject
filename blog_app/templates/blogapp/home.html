@@ -1,85 +1,50 @@
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Auth Blog</title>
-    </head>
-    <body>
-        <div>
-            <nav>
-                <h1>Auth Blog</h1>
-                <div>
-                    {% if user.is_authenticated %}
-                        <span>Welcome, {{ user.username }}</span>
-                        <a href="{% url 'create_post' %}">Create New Post</a>
-                        <form method="post" action="{% url 'logout' %}">
-                            {% csrf_token %}
-                            <button type="submit">Logout</button>
-                        </form>
-                    {% else %}
-                        <a href="{% url 'login' %}">Login</a>
-                        <a href="{% url 'signup' %}">Signup</a>
-                    {% endif %}
-                </div>
-            </nav>
+{% extends 'blogapp/base.html' %}
 
-            <section>
-                <div>
-                    <h1>Welcome to the Blog</h1>
-                    <p>
-                        Discover amazing stories and share your own.
-                    </p>
-                    <div>
-                        <a href="#latest">Explore latest posts</a>
-                        {% if user.is_authenticated %}
-                            <a href="{% url 'create_post' %}">Draft a post</a>
-                        {% else %}
-                            <a href="{% url 'signup' %}">Start writing</a>
-                        {% endif %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <h1 class="mb-4">Welcome to the Blog</h1>
+    <p class="lead mb-4">Discover amazing stories and share your own.</p>
+    <a href="#latest" class="btn btn-primary btn-lg">Explore Latest Posts</a>
+    {% if not user.is_authenticated %}
+    <a href="{% url 'signup' %}" class="btn btn-secondary btn-lg">Start Writing</a>
+    {% endif %}
+</div>
+
+<hr class="my-5">
+
+<h2 id="latest" class="text-center mb-4">All Posts</h2>
+
+{% if posts %}
+    <div class="row">
+        {% for post in posts %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" class="card-img-top" alt="Post Image">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ post.title }}</h5>
+                        <p class="card-text">{{ post.content|truncatewords:20 }}</p>
+                        <div class="mt-auto">
+                            <p class="card-text"><small class="text-muted">By {{ post.author.username }} on {{ post.created_at|date:"F d, Y" }}</small></p>
+                            {% if post.is_draft %}
+                                <span class="badge bg-warning text-dark">Draft</span>
+                            {% endif %}
+                            <a href="{% url 'post_detail' post.id %}" class="btn btn-primary">Read More</a>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <h3>Featured Post</h3>
-                    <p>Check out this week's most popular post.</p>
-                </div>
-            </section>
-
-            <h2 id="latest">All Posts</h2>
-
-            {% if posts %}
-                <section>
-                    {% for post in posts %}
-                        <article>
-                            <div>
-                                {% if post.image %}
-                                    <img src="{{ post.image.url }}" alt="Post Image" width="200">
-                                {% else %}
-                                    <span>No image</span>
-                                {% endif %}
-                            </div>
-                            <h3>{{ post.title | truncatewords:10 }}</h3>
-                            <p>{{ post.content | truncatewords:20 }}</p>
-                            <div>
-                                <span>{{ post.author.username }}</span>
-                                <span>
-                                    {% if post.is_draft %}
-                                        <span>Draft</span>
-                                    {% endif %}
-                                    {{ post.created_at }}
-                                </span>
-                            </div>
-                            <a href="{% url 'post_detail' post.id %}">Read more</a>
-                        </article>
-                    {% endfor %}
-                </section>
-            {% else %}
-                <div>
-                    No posts available right now. Why not create one?
-                </div>
-            {% endif %}
-        </div>
-    </body>
-</html>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center">
+        <p>No posts available right now. Why not create one?</p>
+        <a href="{% url 'create_post' %}" class="btn btn-primary">Create a New Post</a>
+    </div>
+{% endif %}
+{% endblock %}
 
 
